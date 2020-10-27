@@ -3,6 +3,12 @@
 #include <random>
 #include <ctime>
 #include <algorithm>
+#include <conio.h>
+
+constexpr auto KEY_UP = 72;
+constexpr auto KEY_DOWN = 80;
+constexpr auto KEY_LEFT = 75;
+constexpr auto KEY_RIGHT = 77;
 
 class Tile;
 class Board;
@@ -12,9 +18,6 @@ class Game
 {
 public:
     
-
-
-    friend class Board;
 };
 
 
@@ -71,7 +74,7 @@ private:
 
     int leftTile(int i) { return i == 0 ? i : i - 1; }
     int rightTile(int i) { return i == 15 ? i : i + 1; }
-    int upTile(int i) { return i < 3 ? i : i - 4; }
+    int upTile(int i) { return i < 4 ? i : i - 4; }
     int downTile(int i) { return i > 11 ? i : i + 4; }
 
 public:
@@ -166,11 +169,11 @@ public:
         {
             if (m_grid.at(i).getValue() == 0)
                 continue;
-            while (m_grid.at(upTile(i)).getValue() == 0 && (i + 1) % 4 != 0)
+            while (m_grid.at(upTile(i)).getValue() == 0 && i >= 4)
             {
                 m_grid.at(upTile(i)).setValue(m_grid.at(i).getValue());
                 m_grid.at(i).setValue(0);
-                ++i;
+                i-=4;
             }
             if (m_grid.at(i).getValue() == m_grid.at(upTile(i)).getValue() && i > 3)
             {
@@ -187,11 +190,11 @@ public:
         {
             if (m_grid.at(i).getValue() == 0)
                 continue;
-            while (m_grid.at(downTile(i)).getValue() == 0 && (i + 1) % 4 != 0)
+            while (m_grid.at(downTile(i)).getValue() == 0 && i <= 11)
             {
                 m_grid.at(downTile(i)).setValue(m_grid.at(i).getValue());
                 m_grid.at(i).setValue(0);
-                ++i;
+                i+=4;
             }
             if (m_grid.at(i).getValue() == m_grid.at(downTile(i)).getValue() && i < 11)
             {
@@ -209,43 +212,43 @@ public:
 
 std::ostream& operator<< (std::ostream& out, Board board)
 {
-    out << board.m_grid.at(0) << ' ' << board.m_grid.at(1) << ' ' << board.m_grid.at(2) << ' ' << board.m_grid.at(3) << std::endl
-        << board.m_grid.at(4) << ' ' << board.m_grid.at(5) << ' ' << board.m_grid.at(6) << ' ' << board.m_grid.at(7) << std::endl
-        << board.m_grid.at(8) << ' ' << board.m_grid.at(9) << ' ' << board.m_grid.at(10) << ' ' << board.m_grid.at(11) << std::endl
-        << board.m_grid.at(12) << ' ' << board.m_grid.at(13) << ' ' << board.m_grid.at(14) << ' ' << board.m_grid.at(15) << std::endl;
+    out << board.m_grid.at(0) << "  " << board.m_grid.at(1) << "  " << board.m_grid.at(2) << "  " << board.m_grid.at(3) << std::endl
+        << board.m_grid.at(4) << "  " << board.m_grid.at(5) << "  " << board.m_grid.at(6) << "  " << board.m_grid.at(7) << std::endl
+        << board.m_grid.at(8) << "  " << board.m_grid.at(9) << "  " << board.m_grid.at(10) << "  " << board.m_grid.at(11) << std::endl
+        << board.m_grid.at(12) << "  " << board.m_grid.at(13) << "  " << board.m_grid.at(14) << "  " << board.m_grid.at(15) << std::endl;
     return out;
 }
 
 
-
 int main()
 {
-    Board board(random);
-  
-    std::cout << board << std::endl;
-    board.moveLeft();
-
-    std::cout << board << std::endl;
-    board.moveRight();
-
-    std::cout << board << std::endl;
-    board.moveUp();
+    Random random{};
+    Board board{ random };
 
 
-    std::cout << board << std::endl;
-    board.moveLeft();
-
-    std::cout << board << std::endl;
-    board.moveRight();
-
-    std::cout << board << std::endl;
-    board.moveDown();
-    
-    
-    /*  for (int i{ 0 }; i < 50; ++i)
+    int c{};
+    while (1)
     {
+        c = 0;
+        switch ((c = _getch())) {
+        case KEY_UP:
+            board.moveUp();
+            break;
+        case KEY_DOWN:
+            board.moveDown();
+            break;
+        case KEY_LEFT:
+            board.moveLeft();
+            break;
+        case KEY_RIGHT:
+            board.moveRight();
+            break;
+        default:
+            continue;
+            break;
+        }
         std::cout << board << std::endl;
-        board.moveLeft();
-    }*/
-  
+    }
+
+    return 0;
 }
